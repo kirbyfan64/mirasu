@@ -4,7 +4,7 @@ import mirasu
 def test_basic():
     class Base(object):
         def pre(self): self.xyz = 123
-        def post(self): self.xyz = 123
+        def post(self): assert self.xyz == 123
 
     @mirasu.root_hook
     class Derived(Base):
@@ -12,11 +12,12 @@ def test_basic():
         def pre(self): assert self.xyz == 123
 
         @mirasu.post_hook
-        def post(self): assert self.xyz == 123
+        def post(self): self.xyz = 123
 
 
     obj = Derived()
     obj.pre()
+    del obj.xyz
     obj.post()
 
 
@@ -51,7 +52,7 @@ def test_class():
         @classmethod
         def pre(self): self.xyz = 123
         @classmethod
-        def post(self): self.xyz = 123
+        def post(self): assert self.xyz == 123
 
     @mirasu.root_hook
     class Derived(Base):
@@ -61,8 +62,9 @@ def test_class():
 
         @classmethod
         @mirasu.post_hook
-        def post(self): assert self.xyz == 123
+        def post(self): self.xyz = 123
 
 
     Derived.pre()
+    del Derived.xyz
     Derived.post()
